@@ -119,54 +119,72 @@ class RICEInputWidget(QWidget):
     
     def init_ui(self):
         layout = QVBoxLayout()
+        layout.setContentsMargins(2, 2, 2, 2)
+        layout.setSpacing(3)
         
         # Reach
         group_reach = QGroupBox("Охват (Reach)")
+        group_reach.setFont(QFont("Arial", 9, QFont.Weight.Bold))
         form_reach = QFormLayout()
+        form_reach.setSpacing(2)
         self.reach_input = QDoubleSpinBox()
+        self.reach_input.setFont(QFont("Arial", 9))
         self.reach_input.setRange(0.1, 1000000)
         self.reach_input.setValue(100)
         self.reach_input.setDecimals(2)
         lbl_reach = QLabel("Сколько пользователей/клиентов затронет проект?")
         lbl_reach.setWordWrap(True)
+        lbl_reach.setFont(QFont("Arial", 8))
         form_reach.addRow(lbl_reach, self.reach_input)
         group_reach.setLayout(form_reach)
         
         # Impact
         group_impact = QGroupBox("Влияние (Impact)")
+        group_impact.setFont(QFont("Arial", 9, QFont.Weight.Bold))
         form_impact = QFormLayout()
+        form_impact.setSpacing(2)
         self.impact_input = QDoubleSpinBox()
+        self.impact_input.setFont(QFont("Arial", 9))
         self.impact_input.setRange(0.1, 5.0)
         self.impact_input.setValue(1.0)
         self.impact_input.setSingleStep(0.25)
         self.impact_input.setDecimals(2)
         lbl_impact = QLabel("Насколько сильно это повлияет на каждого пользователя?\n(0.25 - минимальное, 0.5 - низкое, 1 - среднее, 2 - высокое, 3 - очень высокое)")
         lbl_impact.setWordWrap(True)
+        lbl_impact.setFont(QFont("Arial", 8))
         form_impact.addRow(lbl_impact, self.impact_input)
         group_impact.setLayout(form_impact)
         
         # Confidence
         group_confidence = QGroupBox("Уверенность (Confidence)")
+        group_confidence.setFont(QFont("Arial", 9, QFont.Weight.Bold))
         form_confidence = QFormLayout()
+        form_confidence.setSpacing(2)
         self.confidence_input = QDoubleSpinBox()
+        self.confidence_input.setFont(QFont("Arial", 9))
         self.confidence_input.setRange(0.01, 1.0)
         self.confidence_input.setValue(0.8)
         self.confidence_input.setSingleStep(0.1)
         self.confidence_input.setDecimals(2)
         lbl_confidence = QLabel("Насколько вы уверены в оценках?\n(1.0 - 100% уверенность, 0.8 - 80%, 0.5 - 50%)")
         lbl_confidence.setWordWrap(True)
+        lbl_confidence.setFont(QFont("Arial", 8))
         form_confidence.addRow(lbl_confidence, self.confidence_input)
         group_confidence.setLayout(form_confidence)
         
         # Effort
         group_effort = QGroupBox("Усилия (Effort)")
+        group_effort.setFont(QFont("Arial", 9, QFont.Weight.Bold))
         form_effort = QFormLayout()
+        form_effort.setSpacing(2)
         self.effort_input = QDoubleSpinBox()
+        self.effort_input.setFont(QFont("Arial", 9))
         self.effort_input.setRange(0.1, 10000)
         self.effort_input.setValue(10)
         self.effort_input.setDecimals(2)
         lbl_effort = QLabel("Сколько человеко-месяцев потребуется?\n(или другая единица измерения усилий)")
         lbl_effort.setWordWrap(True)
+        lbl_effort.setFont(QFont("Arial", 8))
         form_effort.addRow(lbl_effort, self.effort_input)
         group_effort.setLayout(form_effort)
         
@@ -210,35 +228,46 @@ class ValueComplexityWidget(QWidget):
     
     def init_ui(self):
         layout = QVBoxLayout()
+        layout.setContentsMargins(2, 2, 2, 2)
+        layout.setSpacing(3)
         
         # Value
         group_value = QGroupBox("Ценность (Value)")
+        group_value.setFont(QFont("Arial", 9, QFont.Weight.Bold))
         form_value = QFormLayout()
+        form_value.setSpacing(2)
         self.value_input = QDoubleSpinBox()
+        self.value_input.setFont(QFont("Arial", 9))
         self.value_input.setRange(1, 10)
         self.value_input.setValue(5)
         self.value_input.setDecimals(1)
         lbl_value = QLabel("Какова ценность проекта для бизнеса?\n(1 - минимальная, 10 - максимальная)")
         lbl_value.setWordWrap(True)
+        lbl_value.setFont(QFont("Arial", 8))
         form_value.addRow(lbl_value, self.value_input)
         group_value.setLayout(form_value)
         
         # Complexity
         group_complexity = QGroupBox("Сложность (Complexity)")
+        group_complexity.setFont(QFont("Arial", 9, QFont.Weight.Bold))
         form_complexity = QFormLayout()
+        form_complexity.setSpacing(2)
         self.complexity_input = QDoubleSpinBox()
+        self.complexity_input.setFont(QFont("Arial", 9))
         self.complexity_input.setRange(1, 10)
         self.complexity_input.setValue(5)
         self.complexity_input.setDecimals(1)
         lbl_complexity = QLabel("Какова сложность реализации?\n(1 - очень просто, 10 - очень сложно)")
         lbl_complexity.setWordWrap(True)
+        lbl_complexity.setFont(QFont("Arial", 8))
         form_complexity.addRow(lbl_complexity, self.complexity_input)
         group_complexity.setLayout(form_complexity)
         
         # Quadrant info
         self.quadrant_label = QLabel("Квадрант: Быстрая победа")
-        self.quadrant_label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
-        self.quadrant_label.setStyleSheet("color: #2ecc71; padding: 10px;")
+        self.quadrant_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+        self.quadrant_label.setStyleSheet("color: #2ecc71; padding: 5px;")
+        self.quadrant_label.setWordWrap(True)
         
         layout.addWidget(group_value)
         layout.addWidget(group_complexity)
@@ -310,32 +339,55 @@ class DashboardWidget(QWidget):
     
     def init_ui(self):
         layout = QVBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.setSpacing(5)
         
         # Create tab widget for different views
         tabs = QTabWidget()
+        tabs.setDocumentMode(True)  # More compact tab style
         
-        # Summary tab
+        # Summary tab - with scroll area for small screens
         summary_widget = QWidget()
         summary_layout = QVBoxLayout()
+        summary_layout.setContentsMargins(5, 5, 5, 5)
+        summary_layout.setSpacing(5)
         
-        # RICE Score Bar Chart
-        self.rice_figure = Figure(figsize=(10, 6))
+        # RICE Score Bar Chart - smaller default size
+        self.rice_figure = Figure(figsize=(6, 4), dpi=100)
         self.rice_canvas = FigureCanvas(self.rice_figure)
-        summary_layout.addWidget(QLabel("RICE Scores"))
+        self.rice_canvas.setMinimumHeight(200)
+        rice_label = QLabel("RICE Scores")
+        rice_label.setFont(QFont("Arial", 9, QFont.Weight.Bold))
+        summary_layout.addWidget(rice_label)
         summary_layout.addWidget(self.rice_canvas)
         
-        # Value/Complexity Scatter Plot
-        self.vc_figure = Figure(figsize=(10, 6))
+        # Value/Complexity Scatter Plot - smaller default size
+        self.vc_figure = Figure(figsize=(6, 4), dpi=100)
         self.vc_canvas = FigureCanvas(self.vc_figure)
-        summary_layout.addWidget(QLabel("Value vs Complexity Matrix"))
+        self.vc_canvas.setMinimumHeight(200)
+        vc_label = QLabel("Value vs Complexity Matrix")
+        vc_label.setFont(QFont("Arial", 9, QFont.Weight.Bold))
+        summary_layout.addWidget(vc_label)
         summary_layout.addWidget(self.vc_canvas)
         
-        summary_widget.setLayout(summary_layout)
-        tabs.addTab(summary_widget, "Графики")
+        # Add stretch to allow scrolling
+        summary_layout.addStretch()
         
-        # Table tab
+        # Wrap in scroll area for small screens
+        summary_content = QWidget()
+        summary_content.setLayout(summary_layout)
+        summary_scroll = QScrollArea()
+        summary_scroll.setWidget(summary_content)
+        summary_scroll.setWidgetResizable(True)
+        summary_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        summary_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        
+        tabs.addTab(summary_scroll, "Графики")
+        
+        # Table tab - with scroll area
         table_widget = QWidget()
         table_layout = QVBoxLayout()
+        table_layout.setContentsMargins(0, 0, 0, 0)
         
         self.table = QTableWidget()
         self.table.setColumnCount(10)
@@ -344,6 +396,8 @@ class DashboardWidget(QWidget):
             "Усилия", "RICE", "Ценность", "Сложность", "Квадрант"
         ])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.table.verticalHeader().setDefaultSectionSize(28)  # Smaller row height
+        self.table.setFont(QFont("Arial", 9))  # Smaller font
         table_layout.addWidget(self.table)
         
         table_widget.setLayout(table_layout)
@@ -393,11 +447,14 @@ class DashboardWidget(QWidget):
         
         ax1.bar(range(len(names)), rice_scores, color=colors)
         ax1.set_xticks(range(len(names)))
-        ax1.set_xticklabels(names, rotation=45, ha='right')
-        ax1.set_ylabel('RICE Score')
-        ax1.set_title('RICE Scores by Project')
+        # Adjust rotation based on number of projects
+        rotation = 45 if len(names) <= 5 else 60
+        ax1.set_xticklabels(names, rotation=rotation, ha='right', fontsize=8)
+        ax1.set_ylabel('RICE Score', fontsize=9)
+        ax1.set_title('RICE Scores', fontsize=10, pad=5)
         ax1.grid(axis='y', alpha=0.3)
-        self.rice_figure.tight_layout()
+        ax1.tick_params(axis='both', which='major', labelsize=8)
+        self.rice_figure.tight_layout(pad=1.0)
         self.rice_canvas.draw()
         
         # Value/Complexity Scatter Plot
@@ -422,25 +479,26 @@ class DashboardWidget(QWidget):
             
             if x_vals:
                 ax2.scatter(x_vals, y_vals, c=[quadrant_colors[quadrant]], 
-                           label=quadrant, s=100, edgecolors='black', linewidth=0.5)
+                           label=quadrant, s=80, edgecolors='black', linewidth=0.5)
                 
-                # Add labels
+                # Add labels with smaller font
                 for i, txt in enumerate(labels):
-                    ax2.annotate(txt, (x_vals[i], y_vals[i]), fontsize=8, 
-                                xytext=(5, 5), textcoords='offset points')
+                    ax2.annotate(txt, (x_vals[i], y_vals[i]), fontsize=7, 
+                                xytext=(3, 3), textcoords='offset points')
         
         # Add quadrant lines
         ax2.axhline(y=5, color='gray', linestyle='--', alpha=0.5)
         ax2.axvline(x=5, color='gray', linestyle='--', alpha=0.5)
         
-        ax2.set_xlabel('Complexity')
-        ax2.set_ylabel('Value')
-        ax2.set_title('Value vs Complexity Matrix')
+        ax2.set_xlabel('Complexity', fontsize=9)
+        ax2.set_ylabel('Value', fontsize=9)
+        ax2.set_title('Value vs Complexity', fontsize=10, pad=5)
         ax2.set_xlim(0, 11)
         ax2.set_ylim(0, 11)
-        ax2.legend()
+        ax2.legend(fontsize=8, loc='best')
         ax2.grid(True, alpha=0.3)
-        self.vc_figure.tight_layout()
+        ax2.tick_params(axis='both', which='major', labelsize=8)
+        self.vc_figure.tight_layout(pad=1.0)
         self.vc_canvas.draw()
 
 
@@ -525,7 +583,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("RICE + Value/Complexity Priority Tool")
-        self.setMinimumSize(1200, 800)
+        # Set smaller minimum size for small screens
+        self.setMinimumSize(800, 600)
+        self.resize(1024, 768)  # Default size that works on most screens
         self.init_ui()
         self.dashboard.load_data()
     
@@ -534,39 +594,44 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
         
         main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(5, 5, 5, 5)
+        main_layout.setSpacing(5)
         
-        # Input section
+        # Input section - collapsible group
         input_group = QGroupBox("Добавить новый проект")
         input_layout = QVBoxLayout()
+        input_layout.setSpacing(5)
         
         # Project name
         name_form = QFormLayout()
         self.project_name_input = QLineEdit()
         self.project_name_input.setPlaceholderText("Введите название проекта")
+        self.project_name_input.setFont(QFont("Arial", 9))
         name_form.addRow("Название проекта:", self.project_name_input)
         input_layout.addLayout(name_form)
         
         # RICE and Value/Complexity inputs side by side
         inputs_layout = QHBoxLayout()
+        inputs_layout.setSpacing(5)
         
         self.rice_widget = RICEInputWidget()
-        inputs_layout.addWidget(self.rice_widget)
+        inputs_layout.addWidget(self.rice_widget, 1)
         
         self.vc_widget = ValueComplexityWidget()
-        inputs_layout.addWidget(self.vc_widget)
+        inputs_layout.addWidget(self.vc_widget, 1)
         
         input_layout.addLayout(inputs_layout)
         
-        # Save button
+        # Save button - smaller
         self.save_button = QPushButton("Сохранить проект")
         self.save_button.clicked.connect(self.save_project)
+        self.save_button.setFont(QFont("Arial", 10, QFont.Weight.Bold))
         self.save_button.setStyleSheet("""
             QPushButton {
                 background-color: #3498db;
                 color: white;
-                padding: 10px 20px;
-                font-size: 14px;
-                border-radius: 5px;
+                padding: 8px 16px;
+                border-radius: 4px;
             }
             QPushButton:hover {
                 background-color: #2980b9;
@@ -579,7 +644,7 @@ class MainWindow(QMainWindow):
         
         # Dashboard section
         self.dashboard = DashboardWidget()
-        main_layout.addWidget(self.dashboard)
+        main_layout.addWidget(self.dashboard, 1)  # Give it stretch factor
         
         central_widget.setLayout(main_layout)
         
