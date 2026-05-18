@@ -433,60 +433,73 @@ class DashboardWidget(QWidget):
     
     def update_charts(self):
         """Update charts with project data."""
-        if not self.projects:
-            return
-        
-        # RICE Bar Chart
+        # RICE Bar Chart - always draw, even if empty
         self.rice_figure.clear()
         ax1 = self.rice_figure.add_subplot(111)
         
-        names = [p[1] for p in self.projects]
-        rice_scores = [p[6] for p in self.projects]
+        if self.projects:
+            names = [p[1] for p in self.projects]
+            rice_scores = [p[6] for p in self.projects]
+            
+            colors = plt_colors_for_quadrants([p[9] for p in self.projects])
+            
+            ax1.bar(range(len(names)), rice_scores, color=colors)
+            ax1.set_xticks(range(len(names)))
+            # Adjust rotation based on number of projects
+            rotation = 45 if len(names) <= 5 else 60
+            ax1.set_xticklabels(names, rotation=rotation, ha='right', fontsize=8)
+            ax1.set_ylabel('RICE Score', fontsize=9)
+            ax1.set_title('RICE Scores', fontsize=10, pad=5)
+            ax1.grid(axis='y', alpha=0.3)
+            ax1.tick_params(axis='both', which='major', labelsize=8)
+        else:
+            ax1.text(0.5, 0.5, 'Нет данных для отображения\nДобавьте первый проект', 
+                    ha='center', va='center', fontsize=10, transform=ax1.transAxes)
+            ax1.set_ylabel('RICE Score', fontsize=9)
+            ax1.set_title('RICE Scores', fontsize=10, pad=5)
+            ax1.set_xticks([])
+            ax1.set_yticks([])
         
-        colors = plt_colors_for_quadrants([p[9] for p in self.projects])
-        
-        ax1.bar(range(len(names)), rice_scores, color=colors)
-        ax1.set_xticks(range(len(names)))
-        # Adjust rotation based on number of projects
-        rotation = 45 if len(names) <= 5 else 60
-        ax1.set_xticklabels(names, rotation=rotation, ha='right', fontsize=8)
-        ax1.set_ylabel('RICE Score', fontsize=9)
-        ax1.set_title('RICE Scores', fontsize=10, pad=5)
-        ax1.grid(axis='y', alpha=0.3)
-        ax1.tick_params(axis='both', which='major', labelsize=8)
         self.rice_figure.tight_layout(pad=1.0)
         self.rice_canvas.draw()
         
-        # Value/Complexity Scatter Plot
+        # Value/Complexity Scatter Plot - always draw, even if empty
         self.vc_figure.clear()
         ax2 = self.vc_figure.add_subplot(111)
         
-        values = [p[7] for p in self.projects]
-        complexities = [p[8] for p in self.projects]
-        quadrants = [p[9] for p in self.projects]
-        
-        quadrant_colors = {
-            "Быстрая победа": "#2ecc71",
-            "Стратегическая инициатива": "#3498db",
-            "Заполнитель": "#f39c12",
-            "Избегать": "#e74c3c"
-        }
-        
-        for quadrant in quadrant_colors.keys():
-            x_vals = [complexities[i] for i, q in enumerate(quadrants) if q == quadrant]
-            y_vals = [values[i] for i, q in enumerate(quadrants) if q == quadrant]
-            labels = [names[i] for i, q in enumerate(quadrants) if q == quadrant]
+        if self.projects:
+            values = [p[7] for p in self.projects]
+            complexities = [p[8] for p in self.projects]
+            quadrants = [p[9] for p in self.projects]
+            names = [p[1] for p in self.projects]
             
-            if x_vals:
-                ax2.scatter(x_vals, y_vals, c=[quadrant_colors[quadrant]], 
-                           label=quadrant, s=80, edgecolors='black', linewidth=0.5)
+            quadrant_colors = {
+                "Быстрая победа": "#2ecc71",
+                "Стратегическая инициатива": "#3498db",
+                "Заполнитель": "#f39c12",
+                "Избегать": "#e74c3c"
+            }
+            
+            for quadrant in quadrant_colors.keys():
+                x_vals = [complexities[i] for i, q in enumerate(quadrants) if q == quadrant]
+                y_vals = [values[i] for i, q in enumerate(quadrants) if q == quadrant]
+                labels = [names[i] for i, q in enumerate(quadrants) if q == quadrant]
                 
-                # Add labels with smaller font
-                for i, txt in enumerate(labels):
-                    ax2.annotate(txt, (x_vals[i], y_vals[i]), fontsize=7, 
-                                xytext=(3, 3), textcoords='offset points')
+                if x_vals:
+                    ax2.scatter(x_vals, y_vals, c=[quadrant_colors[quadrant]], 
+                               label=quadrant, s=80, edgecolors='black', linewidth=0.5)
+                    
+                    # Add labels with smaller font
+                    for i, txt in enumerate(labels):
+                        ax2.annotate(txt, (x_vals[i], y_vals[i]), fontsize=7, 
+                                    xytext=(3, 3), textcoords='offset points')
+        else:
+            ax2.text(0.5, 0.5, 'Нет данных для отображения\nДобавьте первый проект', 
+                    ha='center', va='center', fontsize=10, transform=ax2.transAxes)
+            ax2.set_xticks([])
+            ax2.set_yticks([])
         
-        # Add quadrant lines
+        # Add quadrant lines (always show)
         ax2.axhline(y=5, color='gray', linestyle='--', alpha=0.5)
         ax2.axvline(x=5, color='gray', linestyle='--', alpha=0.5)
         
@@ -495,7 +508,10 @@ class DashboardWidget(QWidget):
         ax2.set_title('Value vs Complexity', fontsize=10, pad=5)
         ax2.set_xlim(0, 11)
         ax2.set_ylim(0, 11)
-        ax2.legend(fontsize=8, loc='best')
+        
+        if self.projects:
+            ax2.legend(fontsize=8, loc='best')
+        
         ax2.grid(True, alpha=0.3)
         ax2.tick_params(axis='both', which='major', labelsize=8)
         self.vc_figure.tight_layout(pad=1.0)
