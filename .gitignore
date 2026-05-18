@@ -1,32 +1,3 @@
-```
-# Database files
-*.db
+rice_priority_tool.py appears to be a source code file, and there are no build artifacts, dependencies, or temporary files in the changes provided. Therefore, no additional entries are needed in the .gitignore file.
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.ENV
-.ENV.local
-.python-version
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-*.tmp
-*.swp
-*~
-.DS_Store
-Thumbs.db
-```
+The .gitignore content remains empty.

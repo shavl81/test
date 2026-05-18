@@ -597,7 +597,13 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(5, 5, 5, 5)
         main_layout.setSpacing(5)
         
-        # Input section - collapsible group
+        # Create vertical splitter to separate input/charts from table
+        main_splitter = QSplitter(Qt.Orientation.Vertical)
+        
+        # Top section: horizontal splitter for input (left) and charts (right)
+        top_splitter = QSplitter(Qt.Orientation.Horizontal)
+        
+        # Left side: Input form
         input_group = QGroupBox("Добавить новый проект")
         input_layout = QVBoxLayout()
         input_layout.setSpacing(5)
@@ -610,17 +616,13 @@ class MainWindow(QMainWindow):
         name_form.addRow("Название проекта:", self.project_name_input)
         input_layout.addLayout(name_form)
         
-        # RICE and Value/Complexity inputs side by side
-        inputs_layout = QHBoxLayout()
-        inputs_layout.setSpacing(5)
-        
+        # RICE inputs
         self.rice_widget = RICEInputWidget()
-        inputs_layout.addWidget(self.rice_widget, 1)
+        input_layout.addWidget(self.rice_widget)
         
+        # Value/Complexity inputs
         self.vc_widget = ValueComplexityWidget()
-        inputs_layout.addWidget(self.vc_widget, 1)
-        
-        input_layout.addLayout(inputs_layout)
+        input_layout.addWidget(self.vc_widget)
         
         # Save button - smaller
         self.save_button = QPushButton("Сохранить проект")
@@ -640,11 +642,79 @@ class MainWindow(QMainWindow):
         input_layout.addWidget(self.save_button)
         
         input_group.setLayout(input_layout)
-        main_layout.addWidget(input_group)
         
-        # Dashboard section
+        # Wrap input in scroll area for very small screens
+        input_scroll = QScrollArea()
+        input_scroll.setWidget(input_group)
+        input_scroll.setWidgetResizable(True)
+        input_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        input_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        input_scroll.setMinimumWidth(300)
+        
+        # Right side: Charts (graphs only, no table)
+        charts_widget = QWidget()
+        charts_layout = QVBoxLayout()
+        charts_layout.setContentsMargins(5, 5, 5, 5)
+        charts_layout.setSpacing(5)
+        
+        # RICE Score Bar Chart
+        self.charts_rice_figure = Figure(figsize=(5, 3), dpi=100)
+        self.charts_rice_canvas = FigureCanvas(self.charts_rice_figure)
+        self.charts_rice_canvas.setMinimumHeight(150)
+        rice_label = QLabel("RICE Scores")
+        rice_label.setFont(QFont("Arial", 9, QFont.Weight.Bold))
+        charts_layout.addWidget(rice_label)
+        charts_layout.addWidget(self.charts_rice_canvas)
+        
+        # Value/Complexity Scatter Plot
+        self.charts_vc_figure = Figure(figsize=(5, 3), dpi=100)
+        self.charts_vc_canvas = FigureCanvas(self.charts_vc_figure)
+        self.charts_vc_canvas.setMinimumHeight(150)
+        vc_label = QLabel("Value vs Complexity Matrix")
+        vc_label.setFont(QFont("Arial", 9, QFont.Weight.Bold))
+        charts_layout.addWidget(vc_label)
+        charts_layout.addWidget(self.charts_vc_canvas)
+        
+        charts_layout.addStretch()
+        charts_widget.setLayout(charts_layout)
+        
+        # Wrap charts in scroll area
+        charts_scroll = QScrollArea()
+        charts_scroll.setWidget(charts_widget)
+        charts_scroll.setWidgetResizable(True)
+        charts_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        charts_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        charts_scroll.setMinimumWidth(300)
+        
+        # Add widgets to top splitter
+        top_splitter.addWidget(input_scroll)
+        top_splitter.addWidget(charts_scroll)
+        top_splitter.setStretchFactor(0, 1)
+        top_splitter.setStretchFactor(1, 1)
+        # Set initial split position (40% input, 60% charts)
+        top_splitter.setSizes([400, 600])
+        
+        # Bottom section: Table
+        table_group = QGroupBox("Все проекты")
+        table_layout = QVBoxLayout()
+        table_layout.setContentsMargins(5, 5, 5, 5)
+        
         self.dashboard = DashboardWidget()
-        main_layout.addWidget(self.dashboard, 1)  # Give it stretch factor
+        # Hide the tabs since we're showing charts separately
+        # Just show the table directly
+        table_widget = self.dashboard.table
+        table_layout.addWidget(table_widget)
+        table_group.setLayout(table_layout)
+        
+        # Add sections to main splitter
+        main_splitter.addWidget(top_splitter)
+        main_splitter.addWidget(table_group)
+        main_splitter.setStretchFactor(0, 2)
+        main_splitter.setStretchFactor(1, 1)
+        # Set initial split position (65% top, 35% table)
+        main_splitter.setSizes([500, 250])
+        
+        main_layout.addWidget(main_splitter)
         
         central_widget.setLayout(main_layout)
         
@@ -710,6 +780,60 @@ class MainWindow(QMainWindow):
         
         # Refresh dashboard
         self.dashboard.load_data()
+        self.update_charts()
+    
+    def update_charts(self):
+        """Update the charts in the main window."""
+        projects = get_all_projects()
+        
+        if not projects:
+            return
+        
+        # Update RICE chart
+        self.charts_rice_figure.clear()
+        ax1 = self.charts_rice_figure.add_subplot(111)
+        ax1.clear()
+        
+        names = [p[1][:15] + '...' if len(p[1]) > 15 else p[1] for p in projects]
+        rice_scores = [p[6] for p in projects]
+        
+        colors = ['#3498db'] * len(names)
+        ax1.bar(range(len(names)), rice_scores, color=colors)
+        ax1.set_xticks(range(len(names)))
+        ax1.set_xticklabels(names, rotation=45, ha='right', fontsize=7)
+        ax1.set_ylabel('RICE Score', fontsize=8)
+        ax1.set_title('RICE Scores by Project', fontsize=9)
+        ax1.tick_params(axis='y', labelsize=7)
+        ax1.grid(axis='y', alpha=0.3)
+        self.charts_rice_figure.tight_layout(pad=1.0)
+        self.charts_rice_canvas.draw()
+        
+        # Update Value/Complexity chart
+        self.charts_vc_figure.clear()
+        ax2 = self.charts_vc_figure.add_subplot(111)
+        ax2.clear()
+        
+        values = [p[7] for p in projects]
+        complexities = [p[8] for p in projects]
+        quadrants = [p[9] for p in projects]
+        scatter_colors = plt_colors_for_quadrants(quadrants)
+        
+        for i, (val, comp, name) in enumerate(zip(values, complexities, names)):
+            ax2.scatter(comp, val, c=[scatter_colors[i]], s=100, alpha=0.7, 
+                       edgecolors='black', linewidth=0.5)
+            ax2.annotate(name, (comp, val), fontsize=6, ha='center', va='bottom')
+        
+        ax2.axhline(y=5, color='gray', linestyle='--', linewidth=0.5)
+        ax2.axvline(x=5, color='gray', linestyle='--', linewidth=0.5)
+        ax2.set_xlabel('Complexity', fontsize=8)
+        ax2.set_ylabel('Value', fontsize=8)
+        ax2.set_title('Value vs Complexity Matrix', fontsize=9)
+        ax2.set_xlim(0, 11)
+        ax2.set_ylim(0, 11)
+        ax2.grid(True, alpha=0.3)
+        ax2.tick_params(axis='both', which='major', labelsize=7)
+        self.charts_vc_figure.tight_layout(pad=1.0)
+        self.charts_vc_canvas.draw()
     
     def edit_selected_project(self):
         """Edit the selected project from the table."""
@@ -741,6 +865,7 @@ class MainWindow(QMainWindow):
             
             QMessageBox.information(self, "Успех", "Проект успешно обновлен!")
             self.dashboard.load_data()
+            self.update_charts()
     
     def delete_selected_project(self):
         """Delete the selected project from the table."""
@@ -764,6 +889,7 @@ class MainWindow(QMainWindow):
             delete_project(project_id)
             QMessageBox.information(self, "Успех", "Проект успешно удален!")
             self.dashboard.load_data()
+            self.update_charts()
 
 
 def main():
